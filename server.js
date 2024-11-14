@@ -1,5 +1,6 @@
 const express = require('express')
 const pool = require('./config/db')
+const User = require('./models/User')
 
 const app = express();
 const PORT = 3000;
@@ -11,7 +12,7 @@ app.get("/", (req,res) =>{
 app.get("/users", async (req,res) => {
     try{
         
-        const [rows] = await pool.query('SELECT * FROM user');
+        const [rows] = await User.findAll();
         res.json(rows);
 
     }catch(err){
