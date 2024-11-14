@@ -1,27 +1,26 @@
-const express = require('express')
-const pool = require('./config/db')
-const User = require('./models/User')
+const express = require('express');
+const cors = require('cors');
+const userRoutes = require('./Routes/UserRoutes'); // Ensure this path is correct
+const avatarRoutes = require('./Routes/AvatarRoutes')
 
 const app = express();
 const PORT = 3000;
 
-app.get("/", (req,res) =>{
+// Middleware to parse JSON and URL-encoded data
+app.use(express.json()); // for parsing application/json
+app.use(express.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
+
+// Enable Cross-Origin Resource Sharing
+app.use(cors());
+
+// Registering the user routes
+app.use('/api', userRoutes);  // Prefix the route to avoid confusion with other routes
+app.use('/api', avatarRoutes); 
+
+app.get("/", (req, res) => {
     res.send("Hello world");
-})
+});
 
-app.get("/users", async (req,res) => {
-    try{
-        
-        const [rows] = await User.findAll();
-        res.json(rows);
-
-    }catch(err){
-        console.error("Database connection error:", err.message);
-        res.status(500).json({ message: "Database connection failed", error: err.message });
-    }
-})
-
-
-app.listen(PORT,()=>{
+app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
-})
+});

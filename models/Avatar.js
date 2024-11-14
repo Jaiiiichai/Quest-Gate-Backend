@@ -11,6 +11,8 @@ const Avatar = sequelize.define('Avatar', {
     health: { type: DataTypes.INTEGER, defaultValue: 50 },
     level: { type: DataTypes.INTEGER, defaultValue: 1 },
     exp: { type: DataTypes.INTEGER, defaultValue: 0 }
+}, {// Specify the actual table name here
+    timestamps: false // Prevent Sequelize from pluralizing the table name
 });
 
 User.hasMany(Avatar, { foreignKey: 'user_id' });
