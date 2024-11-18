@@ -1,5 +1,4 @@
 const Avatar = require('../models/Avatar');
-const sequelize = require('../config/db');
 
 exports.getAvatarData = async (req, res) => {
   try {
