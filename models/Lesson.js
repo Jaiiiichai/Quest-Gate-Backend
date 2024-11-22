@@ -7,6 +7,8 @@ const Lesson = sequelize.define('Lesson', {
     lesson_content: { type: DataTypes.TEXT },
     category: { type: DataTypes.STRING },
     difficulty: { type: DataTypes.INTEGER }
+}, {// Specify the actual table name here
+    timestamps: false // Prevent Sequelize from pluralizing the table name
 });
 
 module.exports = Lesson;

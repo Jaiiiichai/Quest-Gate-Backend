@@ -4,6 +4,7 @@ const userRoutes = require('./Routes/UserRoutes');
 const avatarRoutes = require('./Routes/AvatarRoutes');
 const itemRoutes = require('./Routes/ItemRoutes');
 const bagRoutes = require('./Routes/BagRoutes')
+const lessonRoutes = require('./Routes/LessonRoutes')
 const sequelize = require('./config/db'); // Make sure this points to your sequelize configuration
 
 const app = express();
@@ -21,6 +22,7 @@ app.use('/api', userRoutes);
 app.use('/api', avatarRoutes);
 app.use('/api', itemRoutes);
 app.use('/api',bagRoutes)
+app.use('/api',lessonRoutes)
 
 // Sync the Sequelize models to the database
 sequelize.sync() // This will attempt to sync the models and alter the tables if needed.
