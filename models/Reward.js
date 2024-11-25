@@ -10,6 +10,8 @@ const Reward = sequelize.define('Reward', {
     coins: { type: DataTypes.INTEGER },
     exp: { type: DataTypes.INTEGER },
     claimed: { type: DataTypes.BOOLEAN }
+}, {// Specify the actual table name here
+    timestamps: false // Prevent Sequelize from pluralizing the table name
 });
 
 Quest.hasMany(Reward, { foreignKey: 'quest_id' });

@@ -31,3 +31,40 @@ exports.updateAvatarCoins = async (req, res) => {
     return res.status(500).json({ message: 'Internal Server Error' });
   }
 };
+
+exports.updateAvatarRewards = async (req, res) => {
+  try {
+    const { avatarId, coins, exp } = req.body;
+
+    // Fetch the avatar by avatarId
+    const avatar = await Avatar.findOne({ where: { avatar_id: avatarId } });
+
+    if (!avatar) {
+      return res.status(404).json({ message: 'Avatar not found' });
+    }
+
+    // Get the current coins of the avatar
+    const currentCoins = avatar.coins;
+    const currentExp = avatar.exp;
+
+    // Add the new coins to the current coins
+    const newCoins = currentCoins + coins;
+    const newExp = currentExp + exp;
+
+    // Update the avatar with the new total coins and exp
+    const [updated] = await Avatar.update(
+      { coins: newCoins, exp: newExp },  // Update both coins and exp
+      { where: { avatar_id: avatarId } }
+    );
+
+    if (updated) {
+      return res.status(200).json({ message: 'Avatar updated successfully' });
+    }
+
+    return res.status(400).json({ message: 'Avatar update failed' });
+
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Internal Server Error' });
+  }
+};
