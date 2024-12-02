@@ -7,6 +7,8 @@ const Grunt = sequelize.define('Grunt', {
     attack: { type: DataTypes.INTEGER },
     defense: { type: DataTypes.INTEGER },
     health: { type: DataTypes.INTEGER }
+}, {
+    timestamps: false 
 });
 
 module.exports = Grunt;

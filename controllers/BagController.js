@@ -1,4 +1,5 @@
 const Bag = require('../models/Bag')
+const Item = require('../models/Item')
 
 const sequelize = require('../config/db');
 
@@ -50,5 +51,40 @@ exports.addItemtoBag = async (req, res) => {
         res.status(500).json({ message: "Internal server error" });
     }
 };
+
+exports.useItem = async (req, res) => {
+    try {
+        const { avatarId, itemId } = req.body;
+
+        // Validate that avatarId and itemId are provided
+        if (!avatarId || !itemId) {
+            return res.status(400).json({ message: 'avatarId and itemId are required' });
+        }
+
+        // Find the item before deletion to return its details
+        const item = await Bag.findOne({
+            where: {
+                avatar_id: avatarId,
+                item_id: itemId
+            },limit: 1
+        });
+
+        if (!item) {
+            return res.status(404).json({ message: 'Item not found in bag' });
+        }
+
+        // Delete a single instance of the item
+        await item.destroy();
+
+        const response = await Item.findByPk(itemId)
+
+        // Respond with item details and success message
+        res.status(200).json(response);
+    } catch (err) {
+        console.error(err); // Log error for debugging
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
+
 
 

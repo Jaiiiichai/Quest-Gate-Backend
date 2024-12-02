@@ -1,4 +1,5 @@
 const Quiz = require('../models/Quiz')
+const Lesson = require('../models/Lesson')
 
 exports.addQuiz = async (req, res) => {
     try {
@@ -51,3 +52,47 @@ exports.getQuizzesByLesson = async (req, res) => {
         res.status(500).json({ message: 'Failed to retrieve quizzes', error: err.message });
     }
 };
+exports.getRandomQuizByCategory = async (req, res) => {
+    try {
+        const { category } = req.params;
+
+        // Find all quizzes for the specified category
+        const quizzes = await Quiz.findAll({
+            include: {
+                model: Lesson,
+                where: { category },
+            },
+        });
+
+        if (quizzes.length === 0) {
+            return res.status(404).json({
+                message: 'No quizzes found for this category.',
+            });
+        }
+
+        // Randomly pick a quiz
+        const randomQuiz = quizzes[Math.floor(Math.random() * quizzes.length)];
+
+        // Return only the quiz data in the response
+        const quizData = randomQuiz.get({ plain: true });
+
+        // Assuming choices is an array or you need to parse it if it's a string
+        const choices = Array.isArray(quizData.choices) ? quizData.choices : JSON.parse(quizData.choices);
+
+        // Structure the response to include only the desired fields
+        const response = {
+            quiz_id: quizData.quiz_id,
+            lesson_id: quizData.lesson_id,
+            question: quizData.question,
+            correct_answer: quizData.correct_answer,
+            choices: choices, // Make sure choices is in the expected format
+        };
+
+        res.status(200).json(response);  // Return the response directly
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Failed to retrieve random quiz', error: err.message });
+    }
+};
+

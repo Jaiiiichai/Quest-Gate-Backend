@@ -8,6 +8,8 @@ const Level = sequelize.define('Level', {
     region: { type: DataTypes.STRING },
     level_number: { type: DataTypes.INTEGER },
     isLocked: { type: DataTypes.BOOLEAN }
+}, {// Specify the actual table name here
+    timestamps: false // Prevent Sequelize from pluralizing the table name
 });
 
 Grunt.hasMany(Level, { foreignKey: 'grunt_id' });
