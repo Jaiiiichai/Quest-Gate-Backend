@@ -10,6 +10,8 @@ const Boss = sequelize.define('Boss', {
     Skill: { type: DataTypes.STRING },
     Skill_desc: { type: DataTypes.TEXT },
     Skill_chance: { type: DataTypes.FLOAT }
+}, {
+    timestamps: false // Prevent Sequelize from pluralizing the table name
 });
 
 module.exports = Boss;
