@@ -10,6 +10,7 @@ const rewardRoutes = require('./Routes/RewardRoutes')
 const AvatarProgressRoutes = require('./Routes/AvatarProgressRoutes')
 const LevelRoutes = require('./Routes/LevelRoutes')
 const GruntRoutes = require('./Routes/GruntRoutes')
+const QuestRoutes = require('./Routes/QuestRoutes')
 const sequelize = require('./config/db');
 
 const app = express();
@@ -33,6 +34,7 @@ app.use('/api',rewardRoutes)
 app.use('/api', AvatarProgressRoutes)
 app.use('/api',LevelRoutes)
 app.use('/api',GruntRoutes)
+app.use('/api',QuestRoutes)
 
 // Sync the Sequelize models to the database
 sequelize.sync() // This will attempt to sync the models and alter the tables if needed.
