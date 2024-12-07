@@ -53,7 +53,7 @@ exports.checkProgress = async (req, res) => {
       });
   
       if (!progress) {
-        return res.status(404).json({ message: 'Progress not found', claimed: false });
+        return res.status(201).json({ message: 'Progress not found', claimed: false });
       }
   
       res.status(200).json({ claimed: progress.claimed });

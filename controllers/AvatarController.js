@@ -32,9 +32,10 @@ exports.updateAvatarCoins = async (req, res) => {
   }
 };
 
+
 exports.updateAvatarRewards = async (req, res) => {
   try {
-    const { avatarId, coins, exp } = req.body;
+    const { avatarId, exp, coins } = req.body;
 
     // Fetch the avatar by avatarId
     const avatar = await Avatar.findOne({ where: { avatar_id: avatarId } });
@@ -42,29 +43,66 @@ exports.updateAvatarRewards = async (req, res) => {
     if (!avatar) {
       return res.status(404).json({ message: 'Avatar not found' });
     }
+    let currentCoins = avatar.coins;
+    let currentExp = avatar.exp + exp;
+    let currentLevel = avatar.level;
+    let attack = avatar.attack;
+    let defense = avatar.defense;
+    let health = avatar.health;
 
-    // Get the current coins of the avatar
-    const currentCoins = avatar.coins;
-    const currentExp = avatar.exp;
+    // Define level progression parameters
+    const baseXP = 20; // XP required to reach level 2
+    const scalingFactor = 1.15; // XP scaling factor
+    const maxLevel = 15; // Maximum level
 
-    // Add the new coins to the current coins
-    const newCoins = currentCoins + coins;
-    const newExp = currentExp + exp;
+    // Determine the XP required for the next level
+    let nextLevelXP = Math.floor(baseXP * Math.pow(scalingFactor, currentLevel - 1));
 
-    // Update the avatar with the new total coins and exp
+    // Check if the avatar levels up
+    while (currentExp >= nextLevelXP && currentLevel < maxLevel) {
+      currentExp -= nextLevelXP;
+      currentLevel += 1;
+      attack += 5; // Increase attack by 5
+      defense += 5; // Increase defense by 5
+      health += 20; // Increase health by 20
+      nextLevelXP = Math.floor(baseXP * Math.pow(scalingFactor, currentLevel - 1)); // Update next level XP
+    }
+
+    // If the avatar reaches max level, set exp to the maximum for that level
+    if (currentLevel === maxLevel && currentExp >= nextLevelXP) {
+      currentExp = nextLevelXP - 1; // Cap exp just below the threshold for next level
+    }
+
+    // Update the avatar with the new stats
     const [updated] = await Avatar.update(
-      { coins: newCoins, exp: newExp },  // Update both coins and exp
+      {
+        coins: currentCoins + coins,
+        exp: currentExp,
+        level: currentLevel,
+        attack: attack,
+        defense: defense,
+        health: health,
+      },
       { where: { avatar_id: avatarId } }
     );
 
     if (updated) {
-      return res.status(200).json({ message: 'Avatar updated successfully' });
+      return res.status(200).json({
+        message: 'Avatar updated successfully',
+        updatedData: {
+          coins: currentCoins + coins,
+          exp: currentExp,
+          level: currentLevel,
+          attack: attack,
+          defense: defense,
+          health: health,
+        },
+      });
     }
 
     return res.status(400).json({ message: 'Avatar update failed' });
-
   } catch (error) {
-    console.error(error);
+    console.error('Error updating avatar rewards:', error.message);
     return res.status(500).json({ message: 'Internal Server Error' });
   }
 };
