@@ -8,8 +8,7 @@ const Level = require('./Level'); // Import Level model instead of Battle
 const Reward = sequelize.define('Reward', {
     reward_id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
     coins: { type: DataTypes.INTEGER },
-    exp: { type: DataTypes.INTEGER },
-    claimed: { type: DataTypes.BOOLEAN }
+    exp: { type: DataTypes.INTEGER }
 }, {
     timestamps: false // Prevent Sequelize from pluralizing the table name
 });
@@ -21,8 +20,6 @@ Reward.belongsTo(Quest, { foreignKey: 'quest_id' });
 Lesson.hasMany(Reward, { foreignKey: 'lesson_id' });
 Reward.belongsTo(Lesson, { foreignKey: 'lesson_id' });
 
-Item.hasMany(Reward, { foreignKey: 'item_id' });
-Reward.belongsTo(Item, { foreignKey: 'item_id' });
 
 // Replace Battle relationship with Level
 Level.hasMany(Reward, { foreignKey: 'level_id' });
